@@ -1,7 +1,7 @@
 package main
 
 import (
-	"MessageArchive_P2/internals"
+	"dataArchive/internals"
 )
 
 func main() {
