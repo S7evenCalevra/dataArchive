@@ -35,7 +35,7 @@ func EncodeToBytes(p interface{}) []byte {
 }
 
 // ServeHTTP will read the payload that is sent, while confirming if it is a test message or real payload
-func (app *application) handler1(w http.ResponseWriter, r *http.Request) {
+func (app *application) Handler1(w http.ResponseWriter, r *http.Request) {
 
 	if r.Header.Get("Content-Type") != "" {
 		value := r.Response.Header.Get("Content-Type")

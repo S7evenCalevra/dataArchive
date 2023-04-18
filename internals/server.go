@@ -26,7 +26,7 @@ func RunServer() {
 	//fmt.Println(l)
 	//Create the default mux
 	servermux := http.NewServeMux()
-	servermux.HandleFunc("/", app.basicAuth(app.handler1))
+	servermux.HandleFunc("/", app.basicAuth(app.Handler1))
 
 	//servermux.HandleFunc("/", handlers.ServeHTTP)
 	listenAddr := ":8080"
