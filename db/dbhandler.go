@@ -71,6 +71,9 @@ func GetTableDataSchema() []string {
 	return arr
 }
 
+// need func to query returend/selected table and paginate all data to render on frontend
+
+// needs refactoring. not needed in this app
 func InsertToDB(d []byte) {
 	now := time.Now().UTC().Format(time.RFC3339)
 	bodyText := string(d)

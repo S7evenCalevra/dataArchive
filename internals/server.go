@@ -27,7 +27,8 @@ func RunServer() {
 	//Create the default mux server and instanciate the routes
 	servermux := http.NewServeMux()
 
-	servermux.HandleFunc("/", app.basicAuth(app.GetTable)) //get record
+	// routes
+	servermux.HandleFunc("/", app.basicAuth(app.GetTableinfo))
 	servermux.HandleFunc("/postrecord", app.basicAuth(app.Handler2))
 
 	//servermux.HandleFunc("/", handlers.ServeHTTP)

@@ -34,7 +34,7 @@ func EncodeToBytes(p interface{}) []byte {
 	return buf.Bytes()
 }
 
-func (app *application) GetTable(w http.ResponseWriter, r *http.Request) {
+func (app *application) GetTableinfo(w http.ResponseWriter, r *http.Request) {
 
 	switch {
 	case r.Method != "GET":
@@ -42,9 +42,9 @@ func (app *application) GetTable(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
-	// code to call from database package to query all tables in db
-	// front end will render packges in ordered list
 	db.ConnectToDatabase()
+	db.GetTableDataSchema()
+	db.CloseDatabase()
 }
 
 // adding get handler (handler1)
