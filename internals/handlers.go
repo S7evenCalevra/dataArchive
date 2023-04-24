@@ -19,7 +19,7 @@ type TestdataArchive struct {
 }
 
 type Payload struct {
-	//jsontag here
+	//jsontag here if any
 }
 
 func EncodeToBytes(p interface{}) []byte {
@@ -34,8 +34,30 @@ func EncodeToBytes(p interface{}) []byte {
 	return buf.Bytes()
 }
 
-// ServeHTTP will read the payload that is sent, while confirming if it is a test message or real payload
-func (app *application) Handler1(w http.ResponseWriter, r *http.Request) {
+func (app *application) GetTable(w http.ResponseWriter, r *http.Request) {
+
+	switch {
+	case r.Method != "GET":
+		fmt.Println("A unsupproted request was sent to this endpoint")
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+	// code to call from database package to query all tables in db
+	// front end will render packges in ordered list
+	db.ConnectToDatabase()
+}
+
+// adding get handler (handler1)
+
+// ServeHTTP will read the payload that is sent.
+func (app *application) Handler2(w http.ResponseWriter, r *http.Request) {
+
+	switch {
+	case r.Method != "POST":
+		fmt.Println("A unsupproted request was sent to this endpoint")
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
 
 	if r.Header.Get("Content-Type") != "" {
 		value := r.Response.Header.Get("Content-Type")

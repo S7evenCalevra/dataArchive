@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -41,6 +42,35 @@ func ConnectToDatabase() {
 
 }
 
+// need to have database handler to get select * from table
+func GetTableDataSchema() []string {
+	queryString, err := db.Prepare("Select * FROM" + stageingtable)
+	if err != nil {
+		fmt.Errorf("Please check query and try again")
+	}
+
+	defer queryString.Close()
+
+	rows, err := queryString.Query()
+	if err != nil {
+		fmt.Errorf("Error querying database")
+	}
+
+	//did a little something called "ZeNate"
+	var arrStr string
+	var arr []string
+
+	for rows.Next() {
+		rows.Scan(&arrStr)
+		json.Unmarshal([]byte(arrStr), &arr)
+		//err = rows.Scan(&column1, &column2, &column3)
+		if err != nil {
+			fmt.Errorf("errors detecting data structure")
+		}
+	}
+	return arr
+}
+
 func InsertToDB(d []byte) {
 	now := time.Now().UTC().Format(time.RFC3339)
 	bodyText := string(d)
@@ -58,5 +88,4 @@ func InsertToDB(d []byte) {
 func CloseDatabase() {
 	defer db.Close()
 	Info.Println("DB Connection Closed")
-	return
 }

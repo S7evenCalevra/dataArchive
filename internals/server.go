@@ -24,9 +24,11 @@ func RunServer() {
 
 	l := log.New(os.Stdout, "Mesg-API ", log.LstdFlags)
 	//fmt.Println(l)
-	//Create the default mux
+	//Create the default mux server and instanciate the routes
 	servermux := http.NewServeMux()
-	servermux.HandleFunc("/", app.basicAuth(app.Handler1))
+
+	servermux.HandleFunc("/", app.basicAuth(app.GetTable)) //get record
+	servermux.HandleFunc("/postrecord", app.basicAuth(app.Handler2))
 
 	//servermux.HandleFunc("/", handlers.ServeHTTP)
 	listenAddr := ":8080"
@@ -59,6 +61,9 @@ func RunServer() {
 	sig := <-c
 	log.Println("Got signal:", sig)
 	// gracefully shutdown the server, waiting max 30 seconds for current operations to complete
-	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, err := context.WithTimeout(context.Background(), 30*time.Second)
+	if err != nil {
+		log.Println("Issue with background tasks and shutting down")
+	}
 	s.Shutdown(ctx)
 }
