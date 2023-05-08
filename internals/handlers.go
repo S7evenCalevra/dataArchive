@@ -13,9 +13,8 @@ import (
 	"strings"
 )
 
-type TestdataArchive struct {
+type Healthcheck struct {
 	Response int
-	TestMesg string
 }
 
 type Payload struct {
@@ -43,11 +42,11 @@ func (app *application) GetTableinfo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	db.ConnectToDatabase()
-	db.GetTableDataSchema()
-	db.CloseDatabase()
-}
 
-// adding get handler (handler1)
+	db.CloseDatabase()
+	////////////////////////////////
+
+}
 
 // ServeHTTP will read the payload that is sent.
 func (app *application) Handler2(w http.ResponseWriter, r *http.Request) {

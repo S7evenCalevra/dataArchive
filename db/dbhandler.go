@@ -43,10 +43,11 @@ func ConnectToDatabase() {
 }
 
 // need to have database handler to get select * from table
-func GetTableDataSchema() []string {
+func GetTableDataSchema(w http.ResponseWriter, r *http.Request) {
 	queryString, err := db.Prepare("Select * FROM" + stageingtable)
 	if err != nil {
 		fmt.Errorf("Please check query and try again")
+		return
 	}
 
 	defer queryString.Close()
@@ -66,9 +67,16 @@ func GetTableDataSchema() []string {
 		//err = rows.Scan(&column1, &column2, &column3)
 		if err != nil {
 			fmt.Errorf("errors detecting data structure")
+			return
 		}
 	}
-	return arr
+	response, err := json.Marshal(arr)
+	if err != nil {
+		http.Error(w, "Error encoding JSON", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(response)
 }
 
 // need func to query returend/selected table and paginate all data to render on frontend

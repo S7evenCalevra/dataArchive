@@ -28,11 +28,12 @@ func RunServer() {
 	servermux := http.NewServeMux()
 
 	// routes
-	servermux.HandleFunc("/", app.basicAuth(app.GetTableinfo))
-	servermux.HandleFunc("/postrecord", app.basicAuth(app.Handler2))
+	servermux.HandleFunc("/getalltable", app.basicAuth(app.GetTableinfo))
 
+	servermux.HandleFunc("/postrecord", app.basicAuth(app.Handler2))
+	
 	//servermux.HandleFunc("/", handlers.ServeHTTP)
-	listenAddr := ":8080"
+	listenAddr := ":4000"
 	if val, ok := os.LookupEnv("FUNCTIONS_CUSTOMHANDLER_PORT"); ok {
 		listenAddr = ":" + val
 	}
