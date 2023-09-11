@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"syscall"
 	"time"
 )
 
@@ -22,21 +23,26 @@ func RunServer() {
 		log.Fatal("basic auth password must be provided")
 	}
 
-	l := log.New(os.Stdout, "Mesg-API ", log.LstdFlags)
+	l := log.New(os.Stdout, "API ", log.LstdFlags)
 	//fmt.Println(l)
 	//Create the default mux server and instanciate the routes
 	servermux := http.NewServeMux()
 
 	// routes
-	servermux.HandleFunc("/getalltable", app.basicAuth(app.GetTableinfo))
+	//servermux.HandleFunc("/getalltable", app.basicAuth(app.GetTableinfo))
+
+	servermux.HandleFunc("/", app.basicAuth(app.GetTableinfo))
 
 	servermux.HandleFunc("/postrecord", app.basicAuth(app.Handler2))
-	
+
 	//servermux.HandleFunc("/", handlers.ServeHTTP)
 	listenAddr := ":4000"
-	if val, ok := os.LookupEnv("FUNCTIONS_CUSTOMHANDLER_PORT"); ok {
-		listenAddr = ":" + val
-	}
+
+	// Uncomment for Azure Function host only
+	//if val, ok := os.LookupEnv("FUNCTIONS_CUSTOMHANDLER_PORT"); ok {
+	//	listenAddr = ":" + val
+	//}
+
 	//create a server to handle timeouts etc
 	s := http.Server{
 		Addr:         listenAddr,        // configure the bind address
@@ -58,14 +64,17 @@ func RunServer() {
 	// trap sigterm or interupt and gracefully shutdown the server
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
-	signal.Notify(c, os.Kill)
+	signal.Notify(c, syscall.SIGTERM)
 	// Block until a signal is received.
 	sig := <-c
 	log.Println("Got signal:", sig)
 	// gracefully shutdown the server, waiting max 30 seconds for current operations to complete
 	ctx, err := context.WithTimeout(context.Background(), 30*time.Second)
 	if err != nil {
-		log.Println("Issue with background tasks and shutting down")
+		//log.Println("Issue with background tasks and shutting down")
+		log.Fatal(
+			"There was a Issue with shutting down the server gracefully.",
+		)
 	}
 	s.Shutdown(ctx)
 }

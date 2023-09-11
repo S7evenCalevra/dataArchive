@@ -1,7 +1,7 @@
 package main
 
 import (
-	"dataArchive/internals"
+	"github.com/S7evenCalevra/dataArchive/internals"
 )
 
 func main() {

@@ -2,7 +2,6 @@ package internals
 
 import (
 	"bytes"
-	"dataArchive/db"
 	"encoding/gob"
 	"encoding/json"
 	"errors"
@@ -11,6 +10,8 @@ import (
 	"log"
 	"net/http"
 	"strings"
+
+	"github.com/S7evenCalevra/dataArchive/db"
 )
 
 type Healthcheck struct {
@@ -44,7 +45,6 @@ func (app *application) GetTableinfo(w http.ResponseWriter, r *http.Request) {
 	db.ConnectToDatabase()
 
 	db.CloseDatabase()
-	////////////////////////////////
 
 }
 

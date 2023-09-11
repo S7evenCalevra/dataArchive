@@ -1,12 +1,13 @@
 package internals_test
 
 import (
-	"dataArchive/internals"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"testing"
 	"time"
+
+	"github.com/S7evenCalevra/dataArchive/internals"
 )
 
 func TestRunServer(t *testing.T) {

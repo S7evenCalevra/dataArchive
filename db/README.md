@@ -2,31 +2,9 @@
 
 ## Requirements
 
-Install the `migrate` tool using [`install_tools`](../bin/install_tools), you can [read more](../internal/tools/) about how those are versioned as well.
+docker run -e AUTH_USERNAME='testguy' -e AUTH_PASSWORD='123Security' -it -p 8080:4000 a99acd8b2888
 
-## Local PostgreSQL
+Genreal Flow :
+SNOW Service catalog --> sends http request with captured values as post to API --> API takes information, marshals to a struct and sends to db -> returns status of request
 
-```
-docker run \
-  -d \
-  -e POSTGRES_HOST_AUTH_METHOD=trust \
-  -e POSTGRES_USER=user \
-  -e POSTGRES_PASSWORD=password \
-  -e POSTGRES_DB=dbname \
-  -p 5432:5432 \
-  postgres:12.5-alpine
-```
-
-## Migrations
-
-Run:
-
-```
-migrate -path db/migrations/ -database postgres://user:password@localhost:5432/dbname?sslmode=disable up
-```
-
-Create:
-
-```
-migrate create -ext sql -dir db/migrations/ <migration name>
-```
+May require a get handler to fetch and check if data exists?
