@@ -34,6 +34,11 @@ func EncodeToBytes(p interface{}) []byte {
 	return buf.Bytes()
 }
 
+// dev/testing purposesonly
+func (app *application) Testhandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprint(w, "test passes")
+}
+
 func (app *application) GetTableinfo(w http.ResponseWriter, r *http.Request) {
 
 	switch {

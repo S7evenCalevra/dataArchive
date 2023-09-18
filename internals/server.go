@@ -12,6 +12,10 @@ import (
 
 func RunServer() {
 	app := new(application)
+	// testing only
+	os.Setenv("AUTH_USERNAME", "testuser")
+	os.Setenv("AUTH_PASSWORD", "testpass")
+	// testing only
 	app.auth.username = os.Getenv("AUTH_USERNAME")
 	app.auth.password = os.Getenv("AUTH_PASSWORD")
 
@@ -31,12 +35,15 @@ func RunServer() {
 	// routes
 	//servermux.HandleFunc("/getalltable", app.basicAuth(app.GetTableinfo))
 
-	servermux.HandleFunc("/", app.basicAuth(app.GetTableinfo))
+	servermux.HandleFunc("/", app.basicAuth(app.Testhandler))
+	//test/dev purposes only
+
+	//servermux.HandleFunc("/", app.basicAuth(app.GetTableinfo))
 
 	servermux.HandleFunc("/postrecord", app.basicAuth(app.Handler2))
 
 	//servermux.HandleFunc("/", handlers.ServeHTTP)
-	listenAddr := ":4000"
+	listenAddr := ":8080"
 
 	// Uncomment for Azure Function host only
 	//if val, ok := os.LookupEnv("FUNCTIONS_CUSTOMHANDLER_PORT"); ok {
