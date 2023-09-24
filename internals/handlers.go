@@ -14,12 +14,8 @@ import (
 	"github.com/S7evenCalevra/dataArchive/db"
 )
 
-type Healthcheck struct {
-	Response int
-}
-
 type Payload struct {
-	//jsontag here if any
+	Name string `json:"example"`
 }
 
 func EncodeToBytes(p interface{}) []byte {
@@ -39,20 +35,6 @@ func (app *application) Testhandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "test passes")
 }
 
-func (app *application) GetTableinfo(w http.ResponseWriter, r *http.Request) {
-
-	switch {
-	case r.Method != "GET":
-		fmt.Println("A unsupproted request was sent to this endpoint")
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		return
-	}
-	db.ConnectToDatabase()
-
-	db.CloseDatabase()
-
-}
-
 // ServeHTTP will read the payload that is sent.
 func (app *application) Handler2(w http.ResponseWriter, r *http.Request) {
 
@@ -64,7 +46,7 @@ func (app *application) Handler2(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Header.Get("Content-Type") != "" {
-		value := r.Response.Header.Get("Content-Type")
+		value := r.Header.Get("Content-Type")
 		if value != "application/json" {
 			msg := "Content-Type header is not application/json"
 			http.Error(w, msg, http.StatusUnsupportedMediaType)
@@ -78,9 +60,11 @@ func (app *application) Handler2(w http.ResponseWriter, r *http.Request) {
 
 	// Setup the decoder and call the DisallowUnknownFields() method on it.
 	dec := json.NewDecoder(r.Body)
+
 	dec.DisallowUnknownFields()
 
 	var f Payload
+
 	err := dec.Decode(&f)
 	if err != nil {
 		var syntaxError *json.SyntaxError
@@ -103,11 +87,6 @@ func (app *application) Handler2(w http.ResponseWriter, r *http.Request) {
 			msg := fmt.Sprintf("Request body contains an invalid value for the %q field (at position %d)", unmarshalTypeError.Field, unmarshalTypeError.Offset)
 			http.Error(w, msg, http.StatusBadRequest)
 
-		// Catch the error caused by extra unexpected fields in the request
-		// body. We extract the field name from the error message and
-		// interpolate it in our custom error message. There is an open
-		// issue at https://github.com/golang/go/issues/29035 regarding
-		// turning this into a sentinel error.
 		case strings.HasPrefix(err.Error(), "json: unknown field "):
 			fieldName := strings.TrimPrefix(err.Error(), "json: unknown field ")
 			msg := fmt.Sprintf("Request body contains unknown field %s", fieldName)
@@ -120,8 +99,7 @@ func (app *application) Handler2(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, msg, http.StatusBadRequest)
 
 		// Catch the error caused by the request body being too large. Again
-		// there is an open issue regarding turning this into a sentinel
-		// error at https://github.com/golang/go/issues/30715.
+
 		case err.Error() == "http: request body too large":
 			msg := "Request body must not be larger than 1MB"
 			http.Error(w, msg, http.StatusRequestEntityTooLarge)

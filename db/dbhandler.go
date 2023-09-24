@@ -14,6 +14,7 @@ import (
 )
 
 var db *sql.DB
+
 var server = os.Getenv("SQL_Hostname")
 var port = 1433
 var user = os.Getenv("SQL_Username")
